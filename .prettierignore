@@ -1,0 +1,11 @@
+.next
+node_modules
+coverage
+test-results
+playwright-report
+blob-report
+package-lock.json
+next-env.d.ts
+supabase/.temp
+# Source of truth provided by the product owner — keep byte-for-byte.
+docs/LIFE_OS_SPEC.md

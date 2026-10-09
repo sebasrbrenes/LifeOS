@@ -1,0 +1,201 @@
+import type {
+  MetricAggregation,
+  MetricDirection,
+  MetricPeriod,
+} from "@/lib/scoring";
+
+/**
+ * Suggested starting metrics (spec §44). Selecting one only pre-fills the
+ * "new metric" form — the user reviews targets and enters every value.
+ * Each must answer "will this change a decision?" (spec §54).
+ */
+export type MetricTemplate = {
+  id: string;
+  categoryKey: "career" | "business" | "body" | "money" | "discipline" | "life";
+  name: string;
+  description: string;
+  unit: string | null;
+  direction: MetricDirection;
+  period: MetricPeriod;
+  aggregation: MetricAggregation;
+  config: Record<string, unknown>;
+};
+
+export const METRIC_TEMPLATES: readonly MetricTemplate[] = [
+  {
+    id: "study_minutes",
+    categoryKey: "career",
+    name: "Minutos de estudio",
+    description: "Tiempo de estudio enfocado (QA, automatización…).",
+    unit: "min",
+    direction: "higher_is_better",
+    period: "weekly",
+    aggregation: "sum",
+    config: { target: 300 },
+  },
+  {
+    id: "quality_applications",
+    categoryKey: "career",
+    name: "Aplicaciones de calidad",
+    description: "Candidaturas trabajadas, no envíos masivos.",
+    unit: null,
+    direction: "higher_is_better",
+    period: "weekly",
+    aggregation: "sum",
+    config: { target: 5 },
+  },
+  {
+    id: "career_level",
+    categoryKey: "career",
+    name: "Nivel de carrera",
+    description: "Etapa actual hacia el puesto objetivo (spec §9.4).",
+    unit: null,
+    direction: "milestone",
+    period: "all_time",
+    aggregation: "latest",
+    config: {
+      milestones: [
+        { value: 0, score: 0, label: "Sin camino definido" },
+        { value: 1, score: 20, label: "Aprendiendo fundamentos" },
+        { value: 2, score: 40, label: "Formación estructurada" },
+        { value: 3, score: 55, label: "Proyecto demostrable" },
+        { value: 4, score: 65, label: "Portfolio sólido" },
+        { value: 5, score: 75, label: "Entrevistas" },
+        { value: 6, score: 90, label: "Oferta" },
+        { value: 7, score: 100, label: "Puesto deseado conseguido" },
+      ],
+    },
+  },
+  {
+    id: "prospects_contacted",
+    categoryKey: "business",
+    name: "Prospectos contactados",
+    description: "Outreach real a clientes potenciales.",
+    unit: null,
+    direction: "higher_is_better",
+    period: "weekly",
+    aggregation: "sum",
+    config: { target: 30 },
+  },
+  {
+    id: "positive_replies",
+    categoryKey: "business",
+    name: "Respuestas positivas",
+    description: "Respuestas con interés real.",
+    unit: null,
+    direction: "higher_is_better",
+    period: "weekly",
+    aggregation: "sum",
+    config: { target: 3 },
+  },
+  {
+    id: "clients",
+    categoryKey: "business",
+    name: "Clientes activos",
+    description: "Clientes que pagan actualmente.",
+    unit: null,
+    direction: "higher_is_better",
+    period: "all_time",
+    aggregation: "latest",
+    config: { target: 3 },
+  },
+  {
+    id: "mrr",
+    categoryKey: "business",
+    name: "MRR",
+    description: "Ingresos recurrentes mensuales.",
+    unit: "$",
+    direction: "higher_is_better",
+    period: "all_time",
+    aggregation: "latest",
+    config: { target: 2000 },
+  },
+  {
+    id: "running_distance",
+    categoryKey: "body",
+    name: "Distancia corriendo",
+    description: "Kilómetros en los últimos 7 días.",
+    unit: "km",
+    direction: "higher_is_better",
+    period: "weekly",
+    aggregation: "sum",
+    config: { target: 15 },
+  },
+  {
+    id: "gym_sessions",
+    categoryKey: "body",
+    name: "Sesiones de gimnasio",
+    description: "Registra 1 por sesión completada.",
+    unit: "sesiones",
+    direction: "higher_is_better",
+    period: "weekly",
+    aggregation: "sum",
+    config: { target: 3 },
+  },
+  {
+    id: "sleep_hours",
+    categoryKey: "body",
+    name: "Horas de sueño",
+    description: "Media de los últimos 7 días.",
+    unit: "h",
+    direction: "target_range",
+    period: "weekly",
+    aggregation: "avg",
+    config: { targetMin: 7, targetMax: 9 },
+  },
+  {
+    id: "liquid_savings",
+    categoryKey: "money",
+    name: "Ahorro líquido",
+    description: "Saldo disponible; registra el saldo actual cuando cambie.",
+    unit: "$",
+    direction: "higher_is_better",
+    period: "all_time",
+    aggregation: "latest",
+    config: { target: 5000 },
+  },
+  {
+    id: "monthly_contribution",
+    categoryKey: "money",
+    name: "Aporte al ahorro",
+    description: "Dinero apartado en los últimos 30 días.",
+    unit: "$",
+    direction: "higher_is_better",
+    period: "monthly",
+    aggregation: "sum",
+    config: { target: 300 },
+  },
+  {
+    id: "weekly_review_done",
+    categoryKey: "discipline",
+    name: "Revisión semanal hecha",
+    description: "¿Hiciste la revisión de la semana?",
+    unit: null,
+    direction: "boolean",
+    period: "weekly",
+    aggregation: "latest",
+    config: {},
+  },
+  {
+    id: "life_satisfaction",
+    categoryKey: "life",
+    name: "Satisfacción con la vida (1–10)",
+    description: "Check-in subjetivo semanal.",
+    unit: "/10",
+    direction: "higher_is_better",
+    period: "weekly",
+    aggregation: "avg",
+    config: { target: 8 },
+  },
+  {
+    id: "free_time_satisfaction",
+    categoryKey: "life",
+    name: "Satisfacción con el tiempo libre (1–10)",
+    description: "¿Tuviste tiempo para ti y los tuyos?",
+    unit: "/10",
+    direction: "higher_is_better",
+    period: "weekly",
+    aggregation: "avg",
+    config: { target: 8 },
+  },
+];

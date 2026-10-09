@@ -1,0 +1,4 @@
+# Keep LF everywhere (Prettier enforces it; CI runs on Linux).
+* text=auto eol=lf
+*.ico binary
+*.png binary
